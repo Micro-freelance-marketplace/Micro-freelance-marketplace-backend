@@ -1,6 +1,6 @@
 import bcrypt from 'bcrypt';
-import User from './model/User.js';
-import generateToken from './utils/generateToken.js';
+import User from '../model/Users.js';
+import generateToken from '../utils/generateToken.js';
 
 // SignUp
 export const signUp = async (req, res) => {
@@ -10,7 +10,7 @@ export const signUp = async (req, res) => {
     if (existingUser) {
       return res.status(401).json({ message: "User already exists." });
     }
-    const User = await User.create({
+    const newUser = await User.create({
       name,
       email,
       password, 

@@ -1,13 +1,9 @@
 import express from "express";
+import { signUp, login } from '../controllers/authController.js';
 
 const router = express.Router();
 
-router.post("/register", (req, res) => {
-    res.status(200).json({ message: "Register endpoint stub" });
-});
-
-router.post("/login", (req, res) => {
-    res.status(200).json({ message: "Login endpoint stub" });
-});
+router.post('/register', signUp);
+router.post('/login', login);
 
 export default router;

@@ -1,10 +1,10 @@
 import express from "express";
-import { signUp, login } from '../controllers/authController.js';
-import { authMiddleware } from '../middleware/authMiddleware.js';
+import { register, login } from '../controllers/auth.controller.js';
+import { authMiddleware } from '../middleware/auth.middleware.js';
 
 const router = express.Router();
 
-router.post('/register', signUp);
+router.post('/register', register);
 router.post('/login', login);
 
 router.get('/protected', authMiddleware, (req, res) => {

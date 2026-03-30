@@ -1,9 +1,9 @@
 import bcrypt from 'bcrypt';
-import User from '../model/Users.js';
+import User from '../models/User.model.js';
 import generateToken from '../utils/generateToken.js';
 
-// SignUp
-export const signUp = async (req, res) => {
+// Register
+export const register = async (req, res) => {
   try {
     const { name, email, password, role, campus } = req.body;
     const existingUser = await User.findOne({ email });

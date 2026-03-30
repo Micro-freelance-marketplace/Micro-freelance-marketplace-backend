@@ -7,7 +7,10 @@ const userSchema=new mongoose.Schema(
         email:{type:String,required:true,unique:true},
         password:{type:String,required:true, minlength: 6},
         role:{type:String,enum:["freelancer","poster"],default:"freelancer"},
-        campus:{type:String,required:true}
+        campus:{type:String,required:true},
+        skills:{type:[String],default:[]},
+        avatar:{type:String,default:""},
+        avgRating:{type:Number,default:0}
     },{timestamps:true}
 );
 userSchema.pre("save", async function() {

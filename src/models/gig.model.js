@@ -44,7 +44,7 @@ const gigSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ["open", "in_progress", "completed", "cancelled"],
+      enum: ["open", "in_progress", "completed", "cancelled", "closed"],
       default: "open",
     },
   },
@@ -53,4 +53,4 @@ const gigSchema = new mongoose.Schema(
 
 const Gig = mongoose.model("Gig", gigSchema);
 
-module.exports = Gig;
+export default Gig;

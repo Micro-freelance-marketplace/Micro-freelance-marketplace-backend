@@ -1,4 +1,4 @@
-import Gig from "../model/gig.model.js";
+import Gig from "../models/gig.model.js";
 
 export const createGig = async (req, res) => {
   try {

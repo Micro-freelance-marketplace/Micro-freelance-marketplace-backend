@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
-import UserProfile from "../model/userProfile.model.js";
-import Review from "../model/review.model.js";
+import UserProfile from "../models/userProfile.model.js";
+import Review from "../models/review.model.js";
+import { authMiddleware } from "../middleware/auth.middleware.js";
 
 export async function calculateAverageRating(revieweeId) {
   const result = await Review.aggregate([
@@ -18,10 +19,10 @@ export async function calculateAverageRating(revieweeId) {
     const { averageRating, reviewCount } = result[0];
     await UserProfile.findOneAndUpdate(
       { user: revieweeId },
-      { 
-        averageRating: Math.round(averageRating * 10) / 10, 
-        reviewCount 
-     },
+      {
+        averageRating: Math.round(averageRating * 10) / 10,
+        reviewCount
+      },
       { new: true }
     );
   } else {

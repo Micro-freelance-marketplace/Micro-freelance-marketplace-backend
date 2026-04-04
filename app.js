@@ -20,7 +20,7 @@ const app = express();
 
 app.use(helmet());
 
-if(process.env.NODE_ENV === 'development') {
+if (process.env.NODE_ENV === 'development') {
     app.use(morgan('dev'));
 }
 
@@ -43,15 +43,10 @@ app.use(mongoSanitize()); // data sanitization
 app.use(xss());//data sanitization against XSS
 app.use(hpp())
 
-<<<<<<< HEAD
-app.get("/api/health", (req, res) => res.status(200).json({
-    status: "success", message: "Server is running"
-=======
 
 app.get("/api/health", (req, res) => res.status(200).json({
-    status: "success", 
+    status: "success",
     message: "Server is running"
->>>>>>> temp-PR
 }));
 
 app.use("/api/auth", limiter, authRoutes);
@@ -60,11 +55,7 @@ app.use("/api/review", reviewRoutes);
 app.use("/api/gigs", gigRoutes);
 app.use("/api/applications", applicationRoutes);
 
-<<<<<<< HEAD
-app.all('/*splat', (req, res, next) => {
-=======
 app.use((req, res, next) => {
->>>>>>> temp-PR
     next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
 });
 

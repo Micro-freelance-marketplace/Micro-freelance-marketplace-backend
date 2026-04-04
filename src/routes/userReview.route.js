@@ -11,7 +11,7 @@ const router = express.Router();
 
 
 router.post("/reviews", authMiddleware, createReview);
-router.get("/users/:id/reviews",authMiddleware, getReviewsForUser);
+router.get("/users/:id/reviews", authMiddleware, getReviewsForUser);
 router.put("/reviews/:id", authMiddleware, updateReview);
 router.delete("/reviews/:id", authMiddleware, deleteReview);
 

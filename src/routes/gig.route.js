@@ -1,20 +1,20 @@
 import express from "express";
-import { createGig } from "../controllers/gig.controller.js";
-import { getGigs } from "../controllers/gig.controller.js";
-import { updateGig } from "../controllers/gig.controller.js";
-import { deleteGig } from "../controllers/gig.controller.js";
-import { getGigById } from "../controllers/gig.controller.js";
+import { createGig, getGigs, updateGig, deleteGig, getGigById  } from "../controllers/gig.controller.js";
 import { authMiddleware } from "../middleware/auth.middleware.js";
+import validate from "../middleware/validate.middleware.js";
+import { createGigValidator } from "../validators/gig.validator.js";
 
-const gigRouter = express.Router();
+
+const router = express.Router();
 
 // make sure authmiddlware works before  
 //importing to  app.js
 
-gigRouter.get("/", getGigs);
-gigRouter.get("/:id", getGigById);
-gigRouter.post("/", authMiddleware, createGig);
-gigRouter.put("/:id", authMiddleware, updateGig);
-gigRouter.delete("/:id", authMiddleware, deleteGig);
+router.get("/", getGigs);
+router.get("/:id", getGigById);
 
-export default gigRouter;
+router.post("/", authMiddleware, createGigValidator, validate, createGig);
+router.put("/:id", authMiddleware, createGigValidator, validate, updateGig);
+router.delete("/:id", authMiddleware, deleteGig);
+
+export default router;

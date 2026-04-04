@@ -16,4 +16,5 @@ router.get("/gigs/:id/applications", authMiddleware, getApplications);
 router.patch("/applications/:id/status", authMiddleware, updateStatus);
 
 router.get("/my-applications", authMiddleware, getMyApplications);
+
 export default router;

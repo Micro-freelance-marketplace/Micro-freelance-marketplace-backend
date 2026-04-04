@@ -1,4 +1,4 @@
-import Application from "../models/Application.model.js";
+import Application from "../model/Application.model.js";
 import Gig from "../models/gig.model.js";
 export const applyToGig = async (req, res) => {
   try {

@@ -1,8 +1,7 @@
 import express from "express";
 import helmet from 'helmet';
 import cors from 'cors';
-import mongoSanitize from 'express-mongo-sanitize';
-import xss from 'xss-clean';
+import {sanitize} from 'express-mongo-sanitize';
 import hpp from "hpp";
 import rateLimit from 'express-rate-limit';
 import morgan from "morgan";
@@ -39,8 +38,20 @@ const limiter = rateLimit({
 });
 
 app.use(express.json({limit: '10kb'}));
-app.use(mongoSanitize()); // data sanitization
-app.use(xss());//data sanitization against XSS
+// app.use(mongoSanitize()); // data sanitization
+app.use((req, res, next) => {
+    if (req.body) req.body = sanitize(req.body);
+    if (req.params) req.params = sanitize(req.params);
+    if (req.headers) req.headers = sanitize(req.headers);
+    
+    if (req.query) {
+        const cleanQuery = sanitize(req.query);
+        Object.keys(req.query).forEach(key => {
+            req.query[key] = cleanQuery[key];
+        });
+    }
+    next();
+});
 app.use(hpp())
 
 

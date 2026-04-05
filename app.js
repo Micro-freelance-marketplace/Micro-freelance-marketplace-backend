@@ -1,10 +1,12 @@
 import express from "express";
 import helmet from 'helmet';
 import cors from 'cors';
-import mongoSanitize from 'express-mongo-sanitize';
+import mongoSanitize from '@exortek/express-mongo-sanitize';
+import './src/models/userProfile.model.js';
 import xss from 'xss-clean';
 import hpp from "hpp";
 import rateLimit from 'express-rate-limit';
+import cookieParser from 'cookie-parser';
 import morgan from "morgan";
 
 import AppError from './src/utils/AppError.js';
@@ -18,19 +20,32 @@ import applicationRoutes from "./src/routes/application.routes.js";
 
 const app = express();
 
+// 1) GLOBAL MIDDLEWARES
+// Express 5.0 compatibility: make req properties writable for legacy middlewares like xss-clean
+app.use((req, res, next) => {
+  ['query', 'params', 'body'].forEach((prop) => {
+    if (req[prop]) {
+      Object.defineProperty(req, prop, {
+        value: req[prop],
+        writable: true,
+        configurable: true,
+        enumerable: true,
+      });
+    }
+  });
+  next();
+});
+
 app.use(helmet());
 
 if (process.env.NODE_ENV === 'development') {
     app.use(morgan('dev'));
 }
 
-app.use(cors(
-    {
-        origin: '*', //we can add routes here at the production time
-        optionsSuccessStatus: 200
-
-    }
-))
+app.use(cors({
+  origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+  credentials: true
+}));
 
 const limiter = rateLimit({
     max: 100,
@@ -39,6 +54,7 @@ const limiter = rateLimit({
 });
 
 app.use(express.json({ limit: '10kb' }));
+app.use(cookieParser());
 app.use(mongoSanitize()); // data sanitization
 app.use(xss());//data sanitization against XSS
 app.use(hpp())

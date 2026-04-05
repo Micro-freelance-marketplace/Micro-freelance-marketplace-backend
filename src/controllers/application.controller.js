@@ -68,7 +68,9 @@ export const updateStatus = async (req, res) => {
       return res.status(400).json({ message: "Invalid status" });
     }
 
-    const application = await Application.findById(req.params.id).populate("gigId");
+    const application = await Application.findById(req.params.id)
+      .populate("gigId")
+      .populate("applicantId", "name email");
 
     if (!application) {
       return res.status(404).json({ message: "Application not found" });

@@ -40,7 +40,7 @@ describe('User Profile & Profile Picture (pp) Tests', () => {
     });
 
 
-    expect(profile.avatar).toBe('default-avatar.png'); 
+    expect(profile.avatar).toBe('default-avatar.jpg'); 
   });
 
   it('should update the profile picture with a mock Cloudinary URL', async () => {

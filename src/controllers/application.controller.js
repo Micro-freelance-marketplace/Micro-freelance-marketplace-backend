@@ -1,5 +1,6 @@
 import Application from "../models/Application.model.js";
 import Gig from "../models/gig.model.js";
+import { sendApplicationStatusEmail } from "../services/email.service.js";
 export const applyToGig = async (req, res) => {
   try {
     const gigId = req.params.id;
@@ -90,6 +91,14 @@ export const updateStatus = async (req, res) => {
 
     application.status = status;
     await application.save();
+
+    // Send notification email in background
+    sendApplicationStatusEmail(
+      application.applicantId.email,
+      application.applicantId.name,
+      gig.title,
+      status
+    );
 
     res.json(application);
   } catch (err) {

@@ -9,11 +9,11 @@ import {
 import { authMiddleware } from "../middleware/auth.middleware.js";
 
 const router = express.Router();
-router.post("/gigs/:id/apply", authMiddleware, applyToGig);
+router.post("/apply/:id", authMiddleware, applyToGig);
 
-router.get("/gigs/:id/applications", authMiddleware, getApplications);
+router.get("/gig/:id", authMiddleware, getApplications);
 
-router.patch("/applications/:id/status", authMiddleware, updateStatus);
+router.patch("/:id/status", authMiddleware, updateStatus);
 
 router.get("/my-applications", authMiddleware, getMyApplications);
 

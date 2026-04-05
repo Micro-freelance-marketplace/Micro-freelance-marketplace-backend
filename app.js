@@ -3,7 +3,6 @@ import helmet from 'helmet';
 import cors from 'cors';
 import mongoSanitize from '@exortek/express-mongo-sanitize';
 import './src/models/userProfile.model.js';
-import xss from 'xss-clean';
 import hpp from "hpp";
 import rateLimit from 'express-rate-limit';
 import morgan from "morgan";
@@ -18,20 +17,6 @@ import gigRoutes from "./src/routes/gig.route.js";
 import applicationRoutes from "./src/routes/application.routes.js";
 
 const app = express();
-
-app.use((req, res, next) => {
-    ['query', 'params', 'body'].forEach((prop) => {
-        if (req[prop]) {
-            Object.defineProperty(req, prop, {
-                value: req[prop],
-                writable: true,
-                configurable: true,
-                enumerable: true,
-            });
-        }
-    });
-    next();
-});
 
 app.use(helmet());
 
@@ -52,8 +37,7 @@ const limiter = rateLimit({
 
 app.use(express.json({ limit: '10kb' }));
 app.use(mongoSanitize());
-app.use(xss());
-app.use(hpp())
+app.use(hpp());
 
 
 app.get("/health", (req, res) => res.status(200).json({

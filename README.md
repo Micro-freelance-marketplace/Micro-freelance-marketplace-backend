@@ -62,12 +62,3 @@ To keep the project consistent for the frontend team, please follow this respons
 ```
 
 ---
-
-## 👨‍💻 Team Role Completion (Current Status)
-
-- **Dev 1 (Setup + Auth)**: 100% (Cookies, JWT, Folders, Models)
-- **Dev 2 (Gigs)**: 100% (CRUD, Pagination)
-- **Dev 3 (Applications)**: 100% (Business Logic, Population)
-- **Dev 4 (Profiles)**: 100% (Hooks, Aggregation, Uploads)
-- **Dev 5 (Security)**: 100% (Helmet, Rate Limit, Error Handling)
-- **Dev 6 (QA/Docs)**: Ready (README, Health Checks, Logging)

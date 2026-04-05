@@ -5,16 +5,16 @@ import validate from "../middleware/validate.middleware.js";
 import { createGigValidator } from "../validators/gig.validator.js";
 
 
-const router = express.Router();
+const gigRoutes = express.Router();
 
 // make sure authmiddlware works before  
 //importing to  app.js
 
-router.get("/", getGigs);
-router.get("/:id", getGigById);
+gigRoutes.get("/", getGigs);
+gigRoutes.get("/:id", getGigById);
 
-router.post("/", authMiddleware, createGigValidator, validate, createGig);
-router.put("/:id", authMiddleware, createGigValidator, validate, updateGig);
-router.delete("/:id", authMiddleware, deleteGig);
+gigRoutes.post("/", authMiddleware, createGigValidator, validate, createGig);
+gigRoutes.put("/:id", authMiddleware, createGigValidator, validate, updateGig);
+gigRoutes.delete("/:id", authMiddleware, deleteGig);
 
-export default router;
+export default gigRoutes;

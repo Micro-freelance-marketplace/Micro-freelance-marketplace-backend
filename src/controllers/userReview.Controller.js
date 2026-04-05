@@ -1,14 +1,14 @@
-import Review from "../model/review.model.js";
+import Review from "../models/review.model.js";
 
 
 export const createReview = async (req, res) => {
   try {
-    const { reviewee, gig, rating, comment } = req.body;
+    const { reviewee, gigId, rating, comment } = req.body;
 
 
     const existingReview = await Review.findOne({
       reviewer: req.user._id,
-      gig: gig,
+      gigId: gigId,
     });
 
     if (existingReview) {
@@ -18,7 +18,7 @@ export const createReview = async (req, res) => {
     const review = new Review({
       reviewer: req.user._id, 
       reviewee, 
-      gig,
+      gigId,
       rating,
       comment,
     });
@@ -40,7 +40,7 @@ export const getReviewsForUser = async (req, res) => {
 
     const reviews = await Review.find({ reviewee: id })
       .populate("reviewer", "name avatar") 
-      .populate("gig", "title")           
+      .populate("gigId", "title")           
       .sort("-createdAt");                
 
     res.status(200).json(reviews);

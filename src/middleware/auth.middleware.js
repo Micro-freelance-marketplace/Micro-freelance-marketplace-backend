@@ -1,13 +1,23 @@
 import jwt from 'jsonwebtoken';
-import User from '../model/Users.js';
+import User from '../models/User.model.js';
 
 export const authMiddleware = async (req, res, next) => {
   try {
-    const authHeader = req.headers.authorization;
-    if (!authHeader || !authHeader.startsWith("Bearer ")) {
-      return res.status(401).json({ message: "Unauthorized: No token provided" });
+    let token;
+    if (
+      req.headers.authorization &&
+      req.headers.authorization.startsWith('Bearer')
+    ) {
+      token = req.headers.authorization.split(' ')[1];
+    } else if (req.cookies.jwt) {
+      token = req.cookies.jwt;
     }
-    const token = authHeader.split(" ")[1];
+
+    if (!token) {
+      return res
+        .status(401)
+        .json({ message: 'Unauthorized: No token provided' });
+    }
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     const user = await User.findById(decoded.id);
     if (!user) {

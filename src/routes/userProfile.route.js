@@ -7,7 +7,7 @@ import {
      uploadAvatar , 
      deleteAvatar } from "../controllers/userProfile.Controller.js";
 import { upload } from "../middleware/upload.js";
-import { authMiddleware } from "../middleware/authMiddleware.js";
+import { authMiddleware } from "../middleware/auth.middleware.js";
 
 const router = express.Router();
 

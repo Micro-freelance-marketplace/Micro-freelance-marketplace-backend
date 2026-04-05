@@ -1,4 +1,4 @@
-import UserProfile from "../model/userProfile.model.js";
+import UserProfile from "../models/userProfile.model.js";
 
 export const getUserProfile = async (req, res) => {
   try {
@@ -93,7 +93,7 @@ export const deleteAvatar = async (req, res) => {
   try {
     const userProfile = await UserProfile.findOneAndUpdate(
       { user: req.user._id },
-      { avatar: "" }, 
+      { $unset: { avatar: 1 } },
       { new: true }
     );
     res.json(userProfile);

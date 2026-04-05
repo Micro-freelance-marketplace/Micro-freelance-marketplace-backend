@@ -16,5 +16,27 @@ userSchema.pre("save", async function() {
   this.password = await bcrypt.hash(this.password, salt);
 });
 
+userSchema.methods.comparePassword = async function(candidatePassword) {
+  return await bcrypt.compare(candidatePassword, this.password);
+};
+
+userSchema.post("save", async function (doc, next) {
+  try {
+    const UserProfile = mongoose.model("UserProfile");
+    const existingProfile = await UserProfile.findOne({ user: doc._id });
+    if (!existingProfile) {
+      await UserProfile.create({
+        user: doc._id,
+        name: doc.name,
+        bio: "",
+        skills: [],
+      });
+    }
+  } catch (err) {
+    console.error("Error creating default user profile:", err);
+  }
+  next();
+});
+
 const User = mongoose.model('User', userSchema);
 export default User;

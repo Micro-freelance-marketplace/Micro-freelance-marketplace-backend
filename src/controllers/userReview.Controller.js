@@ -1,46 +1,46 @@
 import Review from "../models/review.model.js";
 
-
+// POST /api/reviews
 export const createReview = async (req, res) => {
   try {
-    const { reviewee, gigId, rating, comment } = req.body;
-
+    const { reviewee, gig, rating, comment } = req.body;
 
     const existingReview = await Review.findOne({
       reviewer: req.user._id,
-      gigId: gigId,
+      gig: gig,
     });
 
     if (existingReview) {
-      return res.status(400).json({ message: "You have already reviewed this gig." });
+      return res.status(400).json({ message: "You have already reviewed this gig" });
     }
 
-    const review = new Review({
+    const newReview = new Review({
       reviewer: req.user._id, 
       reviewee, 
-      gigId,
+      gig,
       rating,
       comment,
     });
 
+    await newReview.save();
 
-    await review.save();
-
-    res.status(201).json({ message: "Review created successfully", review });
+    res.status(201).json({ 
+      message: "Review created successfully", 
+      review: newReview 
+    });
   } catch (error) {
-    console.error("Create Review Error:", error);
     res.status(500).json({ message: "Server error while creating review" });
   }
 };
 
-
+// GET /api/users/:id/reviews
 export const getReviewsForUser = async (req, res) => {
   try {
     const { id } = req.params;
 
     const reviews = await Review.find({ reviewee: id })
-      .populate("reviewer", "name avatar") 
-      .populate("gigId", "title")           
+      .populate("reviewer", "_id name avatar") 
+      .populate("gig", "_id title")           
       .sort("-createdAt");                
 
     res.status(200).json(reviews);
@@ -49,17 +49,20 @@ export const getReviewsForUser = async (req, res) => {
   }
 };
 
-
+// PUT /api/reviews/:id
 export const updateReview = async (req, res) => {
   try {
     const { id } = req.params;
     const { rating, comment } = req.body;
 
-   
-    const review = await Review.findOne({ _id: id, reviewer: req.user._id });
+    const review = await Review.findById(id);
 
     if (!review) {
-      return res.status(404).json({ message: "Review not found or unauthorized" });
+        return res.status(404).json({ message: "Review not found" });
+    }
+
+    if (review.reviewer.toString() !== req.user._id.toString()) {
+      return res.status(403).json({ message: "Only the reviewer can edit this review" });
     }
 
     if (rating) review.rating = rating;
@@ -73,20 +76,22 @@ export const updateReview = async (req, res) => {
   }
 };
 
-
+// DELETE /api/reviews/:id
 export const deleteReview = async (req, res) => {
   try {
     const { id } = req.params;
 
-
-    const review = await Review.findOneAndDelete({
-      _id: id,
-      reviewer: req.user._id,
-    });
+    const review = await Review.findById(id);
 
     if (!review) {
-      return res.status(404).json({ message: "Review not found or unauthorized" });
+        return res.status(404).json({ message: "Review not found" });
     }
+
+    if (review.reviewer.toString() !== req.user._id.toString()) {
+        return res.status(403).json({ message: "Only the reviewer can delete this review" });
+    }
+
+    await Review.findByIdAndDelete(id);
 
     res.status(200).json({ message: "Review deleted successfully" });
   } catch (error) {

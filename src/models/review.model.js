@@ -13,7 +13,7 @@ const reviewSchema = new mongoose.Schema(
       ref: "User",
       required: [true, "Review must belong to a reviewee"],
     },
-    gigId: {
+    gig: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Gig",
       required: [true, "Review must be linked to a gig"],
@@ -33,7 +33,7 @@ const reviewSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-reviewSchema.index({ gigId: 1, reviewer: 1 }, { unique: true });
+reviewSchema.index({ gig: 1, reviewer: 1 }, { unique: true });
 
 reviewSchema.post("save", function () {
   calculateAverageRating(this.reviewee, this.constructor);

@@ -6,7 +6,6 @@ import './src/models/userProfile.model.js';
 import xss from 'xss-clean';
 import hpp from "hpp";
 import rateLimit from 'express-rate-limit';
-import cookieParser from 'cookie-parser';
 import morgan from "morgan";
 
 import AppError from './src/utils/AppError.js';
@@ -52,18 +51,17 @@ const limiter = rateLimit({
 });
 
 app.use(express.json({ limit: '10kb' }));
-app.use(cookieParser());
 app.use(mongoSanitize());
 app.use(xss());
 app.use(hpp())
 
 
-app.get("/api/health", (req, res) => res.status(200).json({
+app.get("/health", (req, res) => res.status(200).json({
     status: "success",
     message: "Server is running"
 }));
 
-app.use("/api/auth", limiter, authRoutes);
+app.use("/auth", limiter, authRoutes);
 app.use("/api/profile", profileRoutes);
 app.use("/api/reviews", reviewRoutes);
 app.use("/api/gigs", gigRoutes);

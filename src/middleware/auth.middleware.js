@@ -9,14 +9,12 @@ export const authMiddleware = async (req, res, next) => {
       req.headers.authorization.startsWith('Bearer')
     ) {
       token = req.headers.authorization.split(' ')[1];
-    } else if (req.cookies.jwt) {
-      token = req.cookies.jwt;
     }
 
     if (!token) {
       return res
         .status(401)
-        .json({ message: 'Unauthorized: No token provided' });
+        .json({ message: 'No token provided' });
     }
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     const user = await User.findById(decoded.id);

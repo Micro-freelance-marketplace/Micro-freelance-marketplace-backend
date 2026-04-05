@@ -3,6 +3,9 @@ import generateToken from '../utils/generateToken.js';
 
 // Register
 export const register = async (req, res, next) => {
+  if (!req.body) {
+    return res.status(400).json({ message: "Missing request body" });
+  }
   const { name, email, password, role, campus } = req.body;
   try {
     const newUser = await User.create({
@@ -13,8 +16,11 @@ export const register = async (req, res, next) => {
       campus,
     });
 
+    const token = generateToken(newUser);
+
     res.status(201).json({
       message: "User registered successfully!",
+      token
     });
   } catch (error) {
     if (error.code === 11000) {

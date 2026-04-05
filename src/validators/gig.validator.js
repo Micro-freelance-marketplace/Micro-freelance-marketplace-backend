@@ -31,3 +31,38 @@ export const createGigValidator = [
         .isIn(['open', 'in_progress', 'completed', 'cancelled', 'closed'])
         .withMessage('Invalid status type')
 ];
+
+export const updateGigValidator = [
+    body('title')
+        .optional()
+        .trim()
+        .isLength({max: 100}).withMessage('Title cannot exceed 100 characters'),
+
+    body('description')
+        .optional()
+        .trim(),
+    
+    body('budget.amount')
+        .optional()
+        .isNumeric().withMessage('Budget amount must be a number')
+        .custom(val => val >= 0).withMessage('Budget cannot be negative'),
+
+    body('budget.currency')
+        .optional()
+        .isString().toUpperCase()
+        .isLength({ min: 3, max: 3 }).withMessage('Currency must be a 3-letter code (e.g. USD)'),
+    
+    body('category')
+        .optional()
+        .trim(),
+    
+    body('deadline')
+        .optional()
+        .isISO8601().withMessage('Please provide a valid date for the deadline')
+        .custom(val => new Date(val) > new Date()).withMessage('Deadline must be in the future'),
+    
+    body('status')
+        .optional()
+        .isIn(['open', 'in_progress', 'completed', 'cancelled', 'closed'])
+        .withMessage('Invalid status type')
+];

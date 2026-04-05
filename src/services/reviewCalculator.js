@@ -1,10 +1,8 @@
 import mongoose from "mongoose";
 import UserProfile from "../models/userProfile.model.js";
-import Review from "../models/review.model.js";
-import { authMiddleware } from "../middleware/auth.middleware.js";
 
-export async function calculateAverageRating(revieweeId) {
-  const result = await Review.aggregate([
+export async function calculateAverageRating(revieweeId, ReviewModel) {
+  const result = await ReviewModel.aggregate([
     { $match: { reviewee: new mongoose.Types.ObjectId(revieweeId) } },
     {
       $group: {
@@ -33,4 +31,3 @@ export async function calculateAverageRating(revieweeId) {
     );
   }
 }
-

@@ -10,9 +10,9 @@ import { authMiddleware } from "../middleware/auth.middleware.js";
 const router = express.Router();
 
 
-router.post("/reviews", authMiddleware, createReview);
-router.get("/users/:id/reviews", authMiddleware, getReviewsForUser);
-router.put("/reviews/:id", authMiddleware, updateReview);
-router.delete("/reviews/:id", authMiddleware, deleteReview);
+router.post("/", authMiddleware, createReview);
+router.get("/user/:id", authMiddleware, getReviewsForUser);
+router.put("/:id", authMiddleware, updateReview);
+router.delete("/:id", authMiddleware, deleteReview);
 
 export default router;

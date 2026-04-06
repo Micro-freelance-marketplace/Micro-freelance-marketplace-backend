@@ -6,10 +6,8 @@ import './src/models/userProfile.model.js';
 import hpp from "hpp";
 import rateLimit from 'express-rate-limit';
 import morgan from "morgan";
-
 import AppError from './src/utils/AppError.js';
 import globalErrorHandler from './src/controllers/error.controller.js';
-
 import authRoutes from "./src/routes/auth.routes.js";
 import profileRoutes from "./src/routes/userProfile.route.js";
 import reviewRoutes from "./src/routes/userReview.route.js";

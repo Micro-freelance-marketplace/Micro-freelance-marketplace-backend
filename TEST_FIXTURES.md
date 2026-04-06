@@ -298,30 +298,111 @@ Response (200):
 
 ## Gig Model Reference
 
-### Example Gig Object
+### Gig Request (POST /api/gigs)
 ```json
 {
-  "_id": "6789abc999888777666555zz",
-  "title": "Build an e-commerce website",
-  "description": "Need a full-stack e-commerce site with payment integration, product catalog, and admin dashboard.",
+  "title": "Build a Campus Event Platform",
+  "description": "Looking for a full-stack developer to create a platform for AASTU students to manage events, register, and get notifications.",
   "budget": {
-    "amount": 500,
+    "amount": 750,
     "currency": "USD"
   },
   "category": "Web Development",
-  "deadline": "2025-04-30T23:59:59.000Z",
-  "owner": {
-    "id": "6789abc111222333444555aa",
-    "name": "Dawit Mekonnen",
-    "email": "dawit@aastu.edu.et"
-  },
-  "status": "open",
-  "createdAt": "2025-02-20T10:00:00.000Z",
-  "updatedAt": "2025-02-20T10:00:00.000Z"
+  "deadline": "2025-06-15"
 }
 ```
 
-> **Note:** Gig CRUD routes are not yet implemented. The Gig model exists but endpoints are pending.
+### Gig List Response (200)
+```json
+{
+  "success": true,
+  "meta": {
+    "total": 1,
+    "page": 1,
+    "pages": 1,
+    "count": 1
+  },
+  "data": [
+    {
+      "_id": "6789abc999888777666555zz",
+      "title": "Build an e-commerce website",
+      "description": "Need a full-stack e-commerce site...",
+      "budget": { "amount": 500, "currency": "USD" },
+      "category": "Web Development",
+      "deadline": "2025-04-30T23:59:59.000Z",
+      "owner": {
+        "id": "6789abc111222333444555aa",
+        "name": "Dawit Mekonnen",
+        "email": "dawit@aastu.edu.et"
+      },
+      "status": "open",
+      "createdAt": "2025-02-20T10:00:00.000Z"
+    }
+  ]
+}
+```
+
+---
+
+## Applications
+
+### Apply Request (POST /api/applications/apply/:gigId)
+```json
+{
+  "coverLetter": "Dear Dawit, I am a senior Software Engineering student at AASTU with 2 years of experience in React and Node.js. I have built three similar platforms and can deliver this efficiently."
+}
+```
+
+### Apply Response (201)
+```json
+{
+  "_id": "6790app111222333444",
+  "gigId": "6789abc999888777666555zz",
+  "applicantId": "6789abcdef1234567890abcd",
+  "coverLetter": "Dear Dawit, I am a senior Software Engineering student...",
+  "status": "pending",
+  "appliedAt": "2025-03-20T10:00:00.000Z",
+  "createdAt": "2025-03-20T10:00:00.000Z"
+}
+```
+
+### Update Status Request (PATCH /api/applications/:id/status)
+```json
+{
+  "status": "accepted"
+}
+```
+
+### Status Update Response (200)
+```json
+{
+  "_id": "6790app111222333444",
+  "gigId": "6789abc999888777666555zz",
+  "applicantId": {
+    "_id": "6789abcdef1234567890abcd",
+    "name": "Abebe Kebede",
+    "email": "abebe@aastu.edu.et"
+  },
+  "status": "accepted",
+  "appliedAt": "2025-03-20T10:00:00.000Z"
+}
+```
+
+### My Applications Response (200)
+```json
+[
+  {
+    "_id": "6790app111222333444",
+    "gigId": {
+      "_id": "6789abc999888777666555zz",
+      "title": "Build an e-commerce website",
+      "budget": { "amount": 500 }
+    },
+    "status": "accepted",
+    "appliedAt": "2025-03-20T10:00:00.000Z"
+  }
+]
+```
 
 ---
 

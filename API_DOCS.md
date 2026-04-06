@@ -16,19 +16,18 @@ Authorization: Bearer <token>
 
 The token is returned on login and expires after 1 day.
 
-> **Unauthenticated endpoints:** `POST /auth/register`, `POST /auth/login`, `GET /health`
+> **Unauthenticated endpoints:** `POST /auth/register`, `POST /auth/login`, `GET /api/gigs` (list/get), `GET /health`
 > **Authenticated endpoints:** everything else
 
 ---
 
 ## API Endpoints
 
-### Auth
-
 | Method | Endpoint | Auth | Description |
 |--------|----------|------|-------------|
 | POST | `/auth/register` | No | Register a new user |
 | POST | `/auth/login` | No | Login and get JWT token |
+| GET | `/auth/logout` | No | Clear authentication (test/cleanup) |
 | GET | `/auth/protected` | Yes | Verify token (test route) |
 
 ### User Profile
@@ -47,9 +46,29 @@ The token is returned on login and expires after 1 day.
 | Method | Endpoint | Auth | Description |
 |--------|----------|------|-------------|
 | POST | `/api/reviews` | Yes | Create a review |
-| GET | `/api/users/:id/reviews` | Yes | Get all reviews for a user |
-| PUT | `/api/reviews/:id` | Yes | Update your own review |
-| DELETE | `/api/reviews/:id` | Yes | Delete your own review |
+| GET | `/api/reviews/users/:id/reviews` | Yes | Get all reviews for a user |
+| PUT | `/api/reviews/reviews/:id` | Yes | Update your own review |
+| DELETE | `/api/reviews/reviews/:id` | Yes | Delete your own review |
+
+### Gigs
+
+| Method | Endpoint | Auth | Description |
+|--------|----------|------|-------------|
+| GET | `/api/gigs` | No | List all gigs (with filters/search) |
+| GET | `/api/gigs/:id` | No | Get single gig details |
+| POST | `/api/gigs` | Yes | Create a new gig (Poster only) |
+| PUT | `/api/gigs/:id` | Yes | Update gig details (Owner only) |
+| PATCH | `/api/gigs/:id` | Yes | Partial update gig (Owner only) |
+| DELETE | `/api/gigs/:id` | Yes | Close/Soft-delete gig (Owner only) |
+
+### Applications
+
+| Method | Endpoint | Auth | Description |
+|--------|----------|------|-------------|
+| POST | `/api/applications/apply/:id` | Yes | Apply for a gig (Freelancer only) |
+| GET | `/api/applications/gig/:id` | Yes | See applications for a gig (Owner only) |
+| PATCH | `/api/applications/:id/status` | Yes | Accept/Reject application (Owner only) |
+| GET | `/api/applications/my-applications` | Yes | See my gig applications |
 
 ### Health
 
@@ -183,7 +202,7 @@ The token is returned on login and expires after 1 day.
 
 **Response 400:**
 ```json
-{ "message": "Profile already exists" }
+{ "status": "fail", "message": "Profile already exists" }
 ```
 
 ---
@@ -288,7 +307,7 @@ The token is returned on login and expires after 1 day.
 
 ---
 
-### GET `/api/users/:id/reviews`
+### GET `/api/reviews/users/:id/reviews`
 
 **Headers:** `Authorization: Bearer <token>`
 
@@ -323,7 +342,7 @@ The token is returned on login and expires after 1 day.
 
 ---
 
-### PUT `/api/reviews/:id`
+### PUT `/api/reviews/reviews/:id`
 
 **Headers:** `Authorization: Bearer <token>`
 
@@ -352,7 +371,7 @@ The token is returned on login and expires after 1 day.
 
 ---
 
-### DELETE `/api/reviews/:id`
+### DELETE `/api/reviews/reviews/:id`
 
 **Headers:** `Authorization: Bearer <token>`
 
@@ -366,6 +385,170 @@ The token is returned on login and expires after 1 day.
 **Response 403:**
 ```json
 { "message": "Only the reviewer can delete this review" }
+```
+
+---
+
+### GET `/api/gigs`
+
+**Query Parameters:**
+- `search` — string (search in title/description)
+- `category` — string (filter by category)
+- `page` — number (default: 1)
+- `limit` — number (default: 10)
+
+**Response 200:**
+```json
+{
+  "success": true,
+  "meta": {
+    "total": 50,
+    "page": 1,
+    "pages": 5,
+    "count": 10
+  },
+  "data": [
+    {
+      "_id": "6789abc...",
+      "title": "Build a React App",
+      "description": "Longer description...",
+      "budget": { "amount": 500, "currency": "USD" },
+      "category": "Web Dev",
+      "deadline": "2025-12-01T00:00:00Z",
+      "owner": { "name": "John Doe", "email": "john@example.com" },
+      "status": "open"
+    }
+  ]
+}
+```
+
+---
+
+### POST `/api/gigs`
+
+**Headers:** `Authorization: Bearer <token>`
+
+**Body:**
+```json
+{
+  "title": "Modern Portfolio Website",
+  "description": "I need a portfolio with glassmorphism...",
+  "budget": { "amount": 250, "currency": "USD" },
+  "category": "Design",
+  "deadline": "2025-05-15"
+}
+```
+
+**Response 201:** Success message + created gig object.
+
+---
+
+### GET `/api/gigs/:id`
+
+**Response 200:**
+```json
+{
+  "success": true,
+  "data": {
+    "_id": "6789abc...",
+    "title": "Build a React App",
+    "description": "Full description...",
+    "budget": { "amount": 500, "currency": "USD" },
+    "category": "Web Dev",
+    "deadline": "2025-12-01T00:00:00.000Z",
+    "owner": { "id": "user_id...", "name": "John", "email": "john@example.com" },
+    "status": "open"
+  }
+}
+```
+
+---
+
+### DELETE `/api/gigs/:id`
+
+**Headers:** `Authorization: Bearer <token>`
+> Soft deletes the gig by setting status to `"closed"`. Only the owner can perform this.
+
+**Response 200:**
+```json
+{
+  "message": "Gig closed (soft deleted) successfully",
+  "data": { "status": "closed", ... }
+}
+```
+
+---
+
+### GET `/api/applications/gig/:id`
+
+**Headers:** `Authorization: Bearer <token>`
+**Params:** `:id` is the Gig ID.
+> Only the gig owner can see the applications.
+
+**Response 200:** Array of application objects with applicant details populated.
+
+---
+
+### GET `/api/applications/my-applications`
+
+**Headers:** `Authorization: Bearer <token>`
+> Returns all applications submitted by the current user.
+
+**Response 200:** Array of application objects with gig details populated.
+
+---
+
+---
+
+### POST `/api/applications/apply/:id`
+
+**Headers:** `Authorization: Bearer <token>`
+**Params:** `:id` is the Gig ID.
+
+**Body:**
+```json
+{
+  "coverLetter": "Extensive experience in React and HSL colors..."
+}
+```
+
+**Response 201:**
+```json
+{
+  "_id": "6789app...",
+  "gigId": "6789gig...",
+  "applicantId": "6789user...",
+  "coverLetter": "Extensive experience...",
+  "status": "pending",
+  "appliedAt": "2025-03-20T10:00:00Z"
+}
+```
+
+---
+
+### PATCH `/api/applications/:id/status`
+
+**Headers:** `Authorization: Bearer <token>`
+**Params:** `:id` is the Application ID.
+
+**Body:**
+```json
+{
+  "status": "accepted" 
+}
+```
+> Supported statuses: `"accepted"`, `"rejected"`.
+
+**Response 200:**
+```json
+{
+  "_id": "6789app...",
+  "gigId": "6789gig...",
+  "applicantId": { "_id": "6789user...", "name": "Abebe Kebede", "email": "abebe@aastu.edu.et" },
+  "coverLetter": "...",
+  "status": "accepted",
+  "appliedAt": "2025-03-20T10:00:00Z"
+}
 ```
 
 ---

@@ -27,7 +27,7 @@ The token is returned on login and expires after 1 day.
 |--------|----------|------|-------------|
 | POST | `/auth/register` | No | Register a new user |
 | POST | `/auth/login` | No | Login and get JWT token |
-| GET | `/auth/logout` | No | Clear authentication (test/cleanup) |
+| GET | `/auth/logout` | No | Logout current user |
 | GET | `/auth/protected` | Yes | Verify token (test route) |
 
 ### User Profile
@@ -46,9 +46,9 @@ The token is returned on login and expires after 1 day.
 | Method | Endpoint | Auth | Description |
 |--------|----------|------|-------------|
 | POST | `/api/reviews` | Yes | Create a review |
-| GET | `/api/reviews/users/:id/reviews` | Yes | Get all reviews for a user |
-| PUT | `/api/reviews/reviews/:id` | Yes | Update your own review |
-| DELETE | `/api/reviews/reviews/:id` | Yes | Delete your own review |
+| GET | `/api/reviews/user/:id` | Yes | Get all reviews for a user |
+| PUT | `/api/reviews/:id` | Yes | Update your own review |
+| DELETE | `/api/reviews/:id` | Yes | Delete your own review |
 
 ### Gigs
 
@@ -202,7 +202,7 @@ The token is returned on login and expires after 1 day.
 
 **Response 400:**
 ```json
-{ "status": "fail", "message": "Profile already exists" }
+{ "message": "User profile already exists" }
 ```
 
 ---
@@ -307,7 +307,7 @@ The token is returned on login and expires after 1 day.
 
 ---
 
-### GET `/api/reviews/users/:id/reviews`
+### GET `/api/reviews/user/:id`
 
 **Headers:** `Authorization: Bearer <token>`
 
@@ -342,7 +342,7 @@ The token is returned on login and expires after 1 day.
 
 ---
 
-### PUT `/api/reviews/reviews/:id`
+### PUT `/api/reviews/:id`
 
 **Headers:** `Authorization: Bearer <token>`
 
@@ -371,7 +371,7 @@ The token is returned on login and expires after 1 day.
 
 ---
 
-### DELETE `/api/reviews/reviews/:id`
+### DELETE `/api/reviews/:id`
 
 **Headers:** `Authorization: Bearer <token>`
 
@@ -520,7 +520,7 @@ The token is returned on login and expires after 1 day.
   "applicantId": "6789user...",
   "coverLetter": "Extensive experience...",
   "status": "pending",
-  "appliedAt": "2025-03-20T10:00:00Z"
+  "appliedAt": "2025-03-20T10:00:00.000Z"
 }
 ```
 

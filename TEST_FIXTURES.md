@@ -15,7 +15,7 @@ Sample payloads the frontend can use for testing and mocking.
 }
 ```
 
-### Register Response
+### Register Response (POST /auth/register)
 ```json
 {
   "message": "User registered successfully!"
@@ -30,11 +30,25 @@ Sample payloads the frontend can use for testing and mocking.
 }
 ```
 
-### Login Response
+### Login Response (POST /auth/login)
 ```json
 {
   "message": "Logged in successfully.",
   "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ODlhYmNkZWYxMjM0NTY3ODkwYWJjZCIsInJvbGUiOiJmcmVlbGFuY2VyIiwiaWF0IjoxNzA5MDAwMDAwLCJleHAiOjE3MDkwODY0MDB9.mock_signature"
+}
+```
+
+### Logout Response (GET /auth/logout)
+```json
+{
+  "message": "Logged out successfully"
+}
+```
+
+### Logout Response (GET /auth/logout)
+```json
+{
+  "message": "Logged out successfully"
 }
 ```
 
@@ -131,12 +145,12 @@ Sample payloads the frontend can use for testing and mocking.
 
 ### Profile Not Found (404)
 ```json
-{ "error": { "message": "Profile not found" } }
+{ "message": "User profile not found" }
 ```
 
 ### Profile Already Exists (400)
 ```json
-{ "message": "Profile already exists" }
+{ "message": "User profile already exists" }
 ```
 
 ### Delete Profile Response (200)
@@ -216,7 +230,7 @@ Response (200):
 { "message": "You have already reviewed this gig" }
 ```
 
-### Get User Reviews Response (200)
+### Get User Reviews Response (GET /api/reviews/user/:id)
 ```json
 [
   {
@@ -256,7 +270,7 @@ Response (200):
 
 ### User Not Found for Reviews (404)
 ```json
-{ "error": { "message": "User not found" } }
+{ "message": "User not found" }
 ```
 
 ### Update Review Request
